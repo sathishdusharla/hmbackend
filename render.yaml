@@ -15,21 +15,17 @@ services:
       - key: PORT
         value: "8080"
       
-      # Database Configuration
+      # Database Configuration - IMPORTANT: Set these in Render Dashboard
+      # After creating the database, copy the connection string from the database details
+      # SPRING_DATASOURCE_URL format: postgresql://[user]:[password]@[hostname]:[port]/[database]
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: hospital-db
-          property: connectionString
+        sync: false
       
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: hospital-db
-          property: user
+        value: dbuser
       
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: hospital-db
-          property: password
+        sync: false
       
       - key: SPRING_JPA_DATABASE_PLATFORM
         value: org.hibernate.dialect.PostgreSQLDialect
@@ -37,20 +33,21 @@ services:
       - key: SPRING_JPA_HIBERNATE_DDL_AUTO
         value: validate
       
-      # JWT Configuration - Change this to a secure random value
+      # JWT Configuration - IMPORTANT: Generate a secure random string (32+ chars)
+      # You can use: openssl rand -base64 32
       - key: APP_JWT_SECRET
-        value: changeme-generate-secure-random-string-32-plus-chars
+        value: ${APP_JWT_SECRET}
       
       - key: APP_JWT_EXPIRATION_MS
         value: "86400000"
       
-      # HuggingFace API (set this manually in Render dashboard)
+      # HuggingFace API - Optional, add your API key in Render Dashboard
       - key: HUGGINGFACE_API_KEY
-        value: ""
+        value: ${HUGGINGFACE_API_KEY}
       
       # File Upload Directory
       - key: APP_UPLOAD_DIR
-        value: ./uploads
+        value: /tmp/uploads
 
 databases:
   - name: hospital-db
