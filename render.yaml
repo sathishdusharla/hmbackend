@@ -1,0 +1,62 @@
+services:
+  - type: web
+    name: hospital-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: standard
+    
+    # Build settings
+    buildCommand: ""
+    startCommand: ""
+    
+    # Environment variables
+    envVars:
+      - key: PORT
+        value: "8080"
+      
+      # Database Configuration
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: hospital-db
+          property: connectionString
+      
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: hospital-db
+          property: user
+      
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: hospital-db
+          property: password
+      
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.PostgreSQLDialect
+      
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: validate
+      
+      # JWT Configuration - Change this to a secure random value
+      - key: APP_JWT_SECRET
+        value: changeme-generate-secure-random-string-32-plus-chars
+      
+      - key: APP_JWT_EXPIRATION_MS
+        value: "86400000"
+      
+      # HuggingFace API (set this manually in Render dashboard)
+      - key: HUGGINGFACE_API_KEY
+        value: ""
+      
+      # File Upload Directory
+      - key: APP_UPLOAD_DIR
+        value: ./uploads
+
+databases:
+  - name: hospital-db
+    databaseName: hospitaldb
+    user: dbuser
+    region: oregon
+    plan: standard
+    presetData: |
+      -- Add your SQL initialization here if needed
